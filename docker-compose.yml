@@ -1,0 +1,70 @@
+# version: '3.8'
+# services:
+#   postgres:
+#     image: postgres:16
+#     container_name: taskcollab-postgres-db
+#     environment:
+#       POSTGRES_DB: taskcollab
+#       POSTGRES_USER: admin
+#       POSTGRES_PASSWORD: password
+#     ports:
+#       - "5432:5432"
+#     volumes:
+#       - postgres_data:/var/lib/postgresql/data
+#     networks:
+#       - taskcollab-network
+# volumes:
+#   postgres_data:
+# networks:
+#   taskcollab-network:
+#     driver: bridge
+
+version: '3.8'
+services:
+  postgres:
+    image: postgres:16
+    container_name: taskcollab_postgres_db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: taskcollab
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql # creer la base de donnees keyclock
+    networks:
+      - taskcollab_network
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0.7
+    container_name: taskcollab_keycloak
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: admin
+      KC_DB_PASSWORD: password
+      KC_HOSTNAME: localhost
+      KC_HTTP_ENABLED: true
+      KC_HOSTNAME_STRICT: false
+      KC_HOSTNAME_STRICT_HTTPS: false
+    command: start-dev
+    ports:
+      - "8090:8080"
+    depends_on:
+      - postgres
+    networks:
+      - taskcollab_network
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+
+volumes:
+  postgres_data:
+  keycloak_data:
+
+networks:
+  taskcollab_network:
+    driver: bridge
