@@ -121,6 +121,7 @@ public class ProjectServiceImpl implements ProjectService {
     public ProjectDTO archiveProject(Long id, boolean archive) {
         Project project = projectRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("projet non trouve"));
         project.setArchived(archive);
+        projectRepository.save(project);
         return projectMapper.mapperProjectToProjectDTO(project);
     }
 
@@ -138,5 +139,7 @@ public class ProjectServiceImpl implements ProjectService {
         state.setTodoTasks(tasks.stream().filter(task -> "TODO".equals(task.getStatus())).count());
         return state;
     }
+
+    
     
 }
