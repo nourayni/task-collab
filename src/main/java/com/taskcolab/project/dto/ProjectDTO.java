@@ -2,25 +2,25 @@ package com.taskcolab.project.dto;
 
 import java.util.List;
 
-import com.taskcolab.user.dto.UserDTO;
+
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter @Builder
+@Getter @Setter @NoArgsConstructor
 public class ProjectDTO {
     private Long id;
 
-    @NotBlank(message = "Name is mandatory")
+    // @NotBlank(message = "Name is mandatory")
     private String name;
 
     private String description;
 
-    private UserDTO owner;
+    private Long ownerId;
 
     private boolean archived;
 
-    private List<UserDTO> members;
+    private List<ProjectMemberDTO> members;
 }
